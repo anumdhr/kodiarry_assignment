@@ -3,28 +3,31 @@ import 'package:flutter/material.dart';
 import 'package:kodiary_test/constants/custom_sizedBox.dart';
 import 'package:kodiary_test/modules/ntc_data_package/repo/repo.dart';
 
-import '../../common_widgets/custom_drop_down.dart';
-import '../main_page/main_page.dart';
-import 'data_package_model.dart';
+import '../../../common_widgets/common_button.dart';
+import '../../../common_widgets/custom_drop_down.dart';
+import '../models/data_package_model.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class DataPackagePage extends StatefulWidget {
+  const DataPackagePage({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _DataPackagePageState createState() => _DataPackagePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _DataPackagePageState extends State<DataPackagePage> {
   String dropdownValue = '';
   String subPackageValue = '';
   String packageValue = '';
 
+  //todo controller
+  String selectedPackageDisplay = '';
+  String selectedSubPackageDisplay = '';
+  String selectedDataPackageDisplay = '';
   List<DataPackageModel> dataPackages = [];
   List<String> prepaidItems = [];
   List<String> subPackageItems = [];
   List<String> dataPackageItems = [];
   DataPackageModel? selectedPackages;
-  Subpackage? selectedSubPackage;
 
   @override
   void initState() {
@@ -43,25 +46,27 @@ class _MyHomePageState extends State<MyHomePage> {
       updateSubPackages();
     });
   }
-  void updateSubPackages() {
 
-     final selectedPackage = dataPackages.firstWhere((item) => item.title == dropdownValue,);
-     selectedPackages = selectedPackage;
+  void updateSubPackages() {
+    final selectedPackage = dataPackages.firstWhere(
+      (item) => item.title == dropdownValue,
+    );
+    selectedPackages = selectedPackage;
     setState(() {
       subPackageItems = selectedPackage.subpackages?.map((sp) => sp.title ?? '').toList() ?? [];
       subPackageValue = subPackageItems[0];
       updateDataPackages();
-
     });
   }
 
   void updateDataPackages() {
-    final selectedSubPackage = selectedPackages?.subpackages?.firstWhere((sp) => sp.title == subPackageValue,);
+    final selectedSubPackage = selectedPackages?.subpackages?.firstWhere(
+      (sp) => sp.title == subPackageValue,
+    );
     setState(() {
       dataPackageItems = selectedSubPackage?.datapackages?.map((dp) => dp.title ?? '').toList() ?? [];
       print("Data package is $dataPackageItems");
       packageValue = dataPackageItems[0];
-
     });
   }
 
@@ -69,6 +74,16 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.grey,
+          title: const Text("Data Packages"),
+          centerTitle: true,
+          leading: InkWell(
+            onTap: () => Navigator.pop(context),
+            child: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white),
+          ),
+        ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
           child: Column(
@@ -89,7 +104,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     dropdownValue = newValue!;
                     updateSubPackages();
                   });
-
                 },
               ),
               sBoxH10,
@@ -105,9 +119,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 onChanged: (newValue) {
                   setState(() {
                     subPackageValue = newValue!;
-                    // updateDataPackages();
+                    updateDataPackages();
                   });
-
                 },
               ),
               sBoxH10,
@@ -127,16 +140,24 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
               sBoxH10,
-              CommonButton(
-                buttonText: "Submit",
-                onTap: () {
-                  setState(() {
-
-                  });
-                },
+              Center(
+                child: CommonButton(
+                  buttonText: "Submit",
+                  onTap: () {
+                    setState(() {
+                      selectedPackageDisplay = dropdownValue;
+                      selectedSubPackageDisplay = subPackageValue;
+                      selectedDataPackageDisplay = packageValue;
+                    });
+                  },
+                ),
               ),
-
-
+              sBoxH10,
+              Text("Selected Package Type: $selectedPackageDisplay"),
+              sBoxH5,
+              Text("Selected Sub-package Type: $selectedSubPackageDisplay"),
+              sBoxH5,
+              Text("Selected Data Package: $selectedDataPackageDisplay"),
             ],
           ),
         ),

@@ -17,12 +17,12 @@ class _MapPageState extends State<MapPage> {
 
   final LatLng _center = const LatLng(27.6618319, 85.3022104); // San Francisco
 
-  final Set<Polygon> _polygons = Set.from([
+  final Set<Polygon> _polygons = {
     Polygon(
       polygonId: PolygonId('polygon1'),
       points: [
         LatLng(27.6618319, 85.3022104),
-        LatLng(27.6602804, 85.3059364),
+        LatLng(27.6572758, 85.3014879),
         LatLng(27.6562571, 85.3104714),
         LatLng(27.6550474, 85.3161921),
       ],
@@ -30,7 +30,7 @@ class _MapPageState extends State<MapPage> {
       strokeWidth: 3,
       fillColor: Colors.blue.withOpacity(0.2),
     )
-  ]);
+  };
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;

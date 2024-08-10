@@ -20,7 +20,10 @@ class CustomDropDown extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(headingText),
+        Text(
+          headingText,
+          style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+        ),
         sBoxH10,
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -32,7 +35,8 @@ class CustomDropDown extends StatelessWidget {
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               value: dropdownValue,
-              isExpanded: true, // Ensures the dropdown takes full width
+              isExpanded: true,
+              // Ensures the dropdown takes full width
               icon: const Icon(Icons.keyboard_arrow_down),
               items: items,
               onChanged: onChanged,

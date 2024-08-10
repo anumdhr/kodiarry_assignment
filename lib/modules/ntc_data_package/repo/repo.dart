@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
 
-import '../data_package_model.dart';
+import '../models/data_package_model.dart';
  // Import the file where your models are def
 class RepoServices {
   final Dio dio = Dio();
