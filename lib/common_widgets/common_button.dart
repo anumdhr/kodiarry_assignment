@@ -23,7 +23,7 @@ class CommonButton extends StatelessWidget {
         border: Border.all(color: Colors.white),
       ),
       child: GestureDetector(onTap: onTap, child: Text(buttonText,
-        style: TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white),
       )),
     );
   }

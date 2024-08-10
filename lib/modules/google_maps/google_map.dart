@@ -3,12 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 class MapPage extends StatefulWidget {
+  const MapPage({super.key});
+
   @override
-  _MapPageState createState() => _MapPageState();
+  State<MapPage> createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> {
@@ -18,8 +17,8 @@ class _MapPageState extends State<MapPage> {
 
   final Set<Polygon> _polygons = {
     Polygon(
-      polygonId: PolygonId('polygon1'),
-      points: [
+      polygonId: const PolygonId('polygon1'),
+      points: const [
         LatLng(27.6318496, 85.511409),
         LatLng(27.6295633, 85.5117358),
         LatLng(27.6275661, 85.5250957),
@@ -39,7 +38,9 @@ class _MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Google Maps with Polygon'),
+        backgroundColor: Colors.grey,
+        elevation: 0,
+        title: const Text('Google Maps with Polygon'),
       ),
       body: GoogleMap(
         onMapCreated: _onMapCreated,

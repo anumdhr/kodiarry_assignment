@@ -11,7 +11,7 @@ class DataPackagePage extends StatefulWidget {
   const DataPackagePage({Key? key}) : super(key: key);
 
   @override
-  _DataPackagePageState createState() => _DataPackagePageState();
+  State<DataPackagePage> createState() => _DataPackagePageState();
 }
 
 class _DataPackagePageState extends State<DataPackagePage> {

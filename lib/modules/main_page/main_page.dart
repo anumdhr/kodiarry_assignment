@@ -20,26 +20,23 @@ class MainPage extends StatelessWidget {
             CommonButton(
               buttonText: "Home Page",
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return const DataPackagePage();
-
-                },));
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return const DataPackagePage();
+                  },
+                ));
               },
-
-
-
             ),
             sBoxH10,
             CommonButton(
               buttonText: "Map Page",
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return MapPage();
-
-                },));
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return MapPage();
+                  },
+                ));
               },
-
-
             ),
           ],
         ),
@@ -47,5 +44,3 @@ class MainPage extends StatelessWidget {
     );
   }
 }
-
-

@@ -22,7 +22,7 @@ class CustomDropDown extends StatelessWidget {
       children: [
         Text(
           headingText,
-          style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
         ),
         sBoxH10,
         Container(
@@ -31,12 +31,11 @@ class CustomDropDown extends StatelessWidget {
             border: Border.all(color: Colors.black54),
             borderRadius: BorderRadius.circular(4.0),
           ),
-          width: double.infinity, // Makes the container take full width
+          width: double.infinity,
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               value: dropdownValue,
               isExpanded: true,
-              // Ensures the dropdown takes full width
               icon: const Icon(Icons.keyboard_arrow_down),
               items: items,
               onChanged: onChanged,
