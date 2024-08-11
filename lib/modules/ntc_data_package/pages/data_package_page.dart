@@ -19,7 +19,7 @@ class _DataPackagePageState extends State<DataPackagePage> {
   String subPackageValue = '';
   String packageValue = '';
 
-  //todo controller
+  // Variables to display selected data
   String selectedPackageDisplay = '';
   String selectedSubPackageDisplay = '';
   String selectedDataPackageDisplay = '';
@@ -27,15 +27,16 @@ class _DataPackagePageState extends State<DataPackagePage> {
   List<String> prepaidItems = [];
   List<String> subPackageItems = [];
   List<String> dataPackageItems = [];
-  DataPackageModel? selectedPackages;
+
+  late Future<void> _dataPackagesFuture;
 
   @override
   void initState() {
     super.initState();
-    fetchPrepaidData();
+    _dataPackagesFuture = fetchPrepaidData();
   }
 
-  void fetchPrepaidData() async {
+  Future<void> fetchPrepaidData() async {
     final prepaidData = await RepoServices().getDataPackages();
     dataPackages = prepaidData;
 
@@ -49,9 +50,9 @@ class _DataPackagePageState extends State<DataPackagePage> {
 
   void updateSubPackages() {
     final selectedPackage = dataPackages.firstWhere(
-      (item) => item.title == dropdownValue,
+          (item) => item.title == dropdownValue,
     );
-    selectedPackages = selectedPackage;
+
     setState(() {
       subPackageItems = selectedPackage.subpackages?.map((sp) => sp.title ?? '').toList() ?? [];
       subPackageValue = subPackageItems[0];
@@ -60,12 +61,13 @@ class _DataPackagePageState extends State<DataPackagePage> {
   }
 
   void updateDataPackages() {
-    final selectedSubPackage = selectedPackages?.subpackages?.firstWhere(
-      (sp) => sp.title == subPackageValue,
-    );
+    final selectedSubPackage = dataPackages
+        .firstWhere((item) => item.title == dropdownValue)
+        .subpackages
+        ?.firstWhere((sp) => sp.title == subPackageValue);
+
     setState(() {
       dataPackageItems = selectedSubPackage?.datapackages?.map((dp) => dp.title ?? '').toList() ?? [];
-      print("Data package is $dataPackageItems");
       packageValue = dataPackageItems[0];
     });
   }
@@ -84,82 +86,93 @@ class _DataPackagePageState extends State<DataPackagePage> {
             child: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white),
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomDropDown(
-                dropdownValue: dropdownValue,
-                items: prepaidItems.map((item) {
-                  return DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(item),
-                  );
-                }).toList(),
-                headingText: "Choose package type",
-                onChanged: (newValue) {
-                  setState(() {
-                    dropdownValue = newValue!;
-                    updateSubPackages();
-                  });
-                },
-              ),
-              sBoxH10,
-              CustomDropDown(
-                dropdownValue: subPackageValue,
-                items: subPackageItems.map((item) {
-                  return DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(item),
-                  );
-                }).toList(),
-                headingText: "Choose sub-package type",
-                onChanged: (newValue) {
-                  setState(() {
-                    subPackageValue = newValue!;
-                    updateDataPackages();
-                  });
-                },
-              ),
-              sBoxH10,
-              CustomDropDown(
-                dropdownValue: packageValue,
-                items: dataPackageItems.map((item) {
-                  return DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(item),
-                  );
-                }).toList(),
-                headingText: "Choose Data package",
-                onChanged: (newValue) {
-                  setState(() {
-                    packageValue = newValue!;
-                  });
-                },
-              ),
-              sBoxH10,
-              Center(
-                child: CommonButton(
-                  buttonText: "Submit",
-                  onTap: () {
-                    setState(() {
-                      selectedPackageDisplay = dropdownValue;
-                      selectedSubPackageDisplay = subPackageValue;
-                      selectedDataPackageDisplay = packageValue;
-                    });
-                  },
+        body: FutureBuilder<void>(
+          future: _dataPackagesFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomDropDown(
+                      dropdownValue: dropdownValue,
+                      items: prepaidItems.map((item) {
+                        return DropdownMenuItem<String>(
+                          value: item,
+                          child: Text(item),
+                        );
+                      }).toList(),
+                      headingText: "Choose package type",
+                      onChanged: (newValue) {
+                        setState(() {
+                          dropdownValue = newValue!;
+                          updateSubPackages();
+                        });
+                      },
+                    ),
+                    sBoxH10,
+                    CustomDropDown(
+                      dropdownValue: subPackageValue,
+                      items: subPackageItems.map((item) {
+                        return DropdownMenuItem<String>(
+                          value: item,
+                          child: Text(item),
+                        );
+                      }).toList(),
+                      headingText: "Choose sub-package type",
+                      onChanged: (newValue) {
+                        setState(() {
+                          subPackageValue = newValue!;
+                          updateDataPackages();
+                        });
+                      },
+                    ),
+                    sBoxH10,
+                    CustomDropDown(
+                      dropdownValue: packageValue,
+                      items: dataPackageItems.map((item) {
+                        return DropdownMenuItem<String>(
+                          value: item,
+                          child: Text(item),
+                        );
+                      }).toList(),
+                      headingText: "Choose Data package",
+                      onChanged: (newValue) {
+                        setState(() {
+                          packageValue = newValue!;
+                        });
+                      },
+                    ),
+                    sBoxH10,
+                    Center(
+                      child: CommonButton(
+                        buttonText: "Submit",
+                        onTap: () {
+                          setState(() {
+                            selectedPackageDisplay = dropdownValue;
+                            selectedSubPackageDisplay = subPackageValue;
+                            selectedDataPackageDisplay = packageValue;
+                          });
+                        },
+                      ),
+                    ),
+                    sBoxH10,
+                    Text("Selected Package Type: $selectedPackageDisplay"),
+                    sBoxH5,
+                    Text("Selected Sub-package Type: $selectedSubPackageDisplay"),
+                    sBoxH5,
+                    Text("Selected Data Package: $selectedDataPackageDisplay"),
+                  ],
                 ),
-              ),
-              sBoxH10,
-              Text("Selected Package Type: $selectedPackageDisplay"),
-              sBoxH5,
-              Text("Selected Sub-package Type: $selectedSubPackageDisplay"),
-              sBoxH5,
-              Text("Selected Data Package: $selectedDataPackageDisplay"),
-            ],
-          ),
+              );
+            }
+          },
         ),
       ),
     );
